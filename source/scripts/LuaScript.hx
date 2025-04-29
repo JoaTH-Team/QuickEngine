@@ -1,6 +1,7 @@
 package scripts;
 
 import PlayState;
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -31,6 +32,7 @@ class LuaScript
     public var spriteMap:Map<String, FlxSprite> = new Map<String, FlxSprite>();
     public var textMap:Map<String, FlxText> = new Map<String, FlxText>();
     public var objectMap:Map<String, FlxObject> = new Map<String, FlxObject>();
+    public var cameraMap:Map<String, FlxCamera> = new Map<String, FlxCamera>();
     
     function implete() {
         addcallback("createObject", function (type:String, name:String, config:Dynamic) {
@@ -200,6 +202,19 @@ class LuaScript
                 }
             }
             return null;
+        });
+
+        addcallback("getInputPress", function (type:String, keyName:String) {
+            switch (type) {
+                case "justPressed":
+                    return FlxG.keys.anyJustPressed([EngineUtil.getKeyName(keyName)]);
+                case "justReleased":
+                    return FlxG.keys.anyJustReleased([EngineUtil.getKeyName(keyName)]);
+                case "pressed":
+                    return FlxG.keys.anyPressed([EngineUtil.getKeyName(keyName)]);
+                default:
+                    return false;
+            }
         });
     }
 
