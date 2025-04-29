@@ -36,7 +36,7 @@ class LuaScript
             switch (type) {
                 case "sprite":
                     var sprite:FlxSprite = new FlxSprite(config.x, config.y);
-                    sprite.loadGraphic(Paths.image(config.image));
+                    setCodeWithCheckNull(config.image, img -> sprite.loadGraphic(Paths.image(img)));
                     sprite.active = true;
                     spriteMap.set(name, sprite);
                 case "text":
@@ -77,7 +77,6 @@ class LuaScript
             }
         });
         
-        // Text Config
         addcallback("configText", function (name:String, config:Dynamic) {
             if (textMap.exists(name)) {
                 var text:FlxText = textMap.get(name);
@@ -100,6 +99,66 @@ class LuaScript
                 setCodeWithCheckNull(config.borderColor, borderColor -> text.borderColor = EngineUtil.getColorName(borderColor));
                 setCodeWithCheckNull(config.borderStyle, borderStyle -> text.borderStyle = EngineUtil.getBorderStyleName(borderStyle));
                 setCodeWithCheckNull(config.borderQuality, borderQuality -> text.borderQuality = borderQuality);
+            }
+        });
+
+        addcallback("configSprite", function (name:String, config:Dynamic) {
+            if (spriteMap.exists(name)) {
+                var sprite:FlxSprite = spriteMap.get(name);
+                setCodeWithCheckNull(config.image, img -> sprite.loadGraphic(Paths.image(img)));
+                setCodeWithCheckNull(config.x, x -> sprite.x = x);
+                setCodeWithCheckNull(config.y, y -> sprite.y = y);
+                setCodeWithCheckNull(config.width, width -> sprite.width = width);
+                setCodeWithCheckNull(config.height, height -> sprite.height = height);
+                setCodeWithCheckNull(config.alpha, alpha -> sprite.alpha = alpha);
+                setCodeWithCheckNull(config.scale, scale -> sprite.scale.set(scale.x, scale.y));
+                setCodeWithCheckNull(config.angle, angle -> sprite.angle = angle);
+                setCodeWithCheckNull(config.visible, visible -> sprite.visible = visible);
+                setCodeWithCheckNull(config.active, active -> sprite.active = active);
+                setCodeWithCheckNull(config.scrollFactor, scrollFactor -> sprite.scrollFactor.set(scrollFactor.x, scrollFactor.y));
+            }
+        });
+        
+        addcallback("getSpriteSheet", function (name:String, image:String) {
+            if (spriteMap.exists(name)) {
+                var sprite:FlxSprite = spriteMap.get(name);
+                return sprite.frames = Paths.getSparrowAtlas(image);
+            }
+            return null;
+        });
+
+        addcallback("setAnimation", function (name:String, config:Dynamic) {
+            if (spriteMap.exists(name)) {
+                var sprite:FlxSprite = spriteMap.get(name);
+                switch (config.type) {
+                    case "prefix":
+                        return sprite.animation.addByPrefix(config.name, config.prefix, config.frameRate, config.loop, config.flipX, config.flipY);
+                    case "indices":
+                        return sprite.animation.addByIndices(config.name, config.prefix, config.indices, config.postfix, config.frameRate, config.loop, config.flipX, config.flipY);
+                }
+            }
+        });
+
+        addcallback("playAnimation", function (name:String, animation:String, force:Bool = false) {
+            if (spriteMap.exists(name)) {
+                var sprite:FlxSprite = spriteMap.get(name);
+                sprite.animation.play(animation, force);
+                return true;
+            }
+            return false;
+        });
+
+        addcallback("configObject", function (name:String, config:Dynamic) {
+            if (objectMap.exists(name)) {
+                var object:FlxObject = objectMap.get(name);
+                setCodeWithCheckNull(config.x, x -> object.x = x);
+                setCodeWithCheckNull(config.y, y -> object.y = y);
+                setCodeWithCheckNull(config.width, width -> object.width = width);
+                setCodeWithCheckNull(config.height, height -> object.height = height);
+                setCodeWithCheckNull(config.angle, angle -> object.angle = angle);
+                setCodeWithCheckNull(config.visible, visible -> object.visible = visible);
+                setCodeWithCheckNull(config.active, active -> object.active = active);
+                setCodeWithCheckNull(config.scrollFactor, scrollFactor -> object.scrollFactor.set(scrollFactor.x, scrollFactor.y));
             }
         });
 
