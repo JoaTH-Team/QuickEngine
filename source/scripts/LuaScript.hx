@@ -1,6 +1,7 @@
 package scripts;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
 import llua.*;
@@ -28,7 +29,8 @@ class LuaScript
 
     public var spriteMap:Map<String, FlxSprite> = new Map<String, FlxSprite>();
     public var textMap:Map<String, FlxText> = new Map<String, FlxText>();
-
+    public var objectMap:Map<String, FlxObject> = new Map<String, FlxObject>();
+    
     function implete() {
         addcallback("createObject", function (type:String, name:String, config:Dynamic) {
             switch (type) {
@@ -41,6 +43,10 @@ class LuaScript
                     var text:FlxText = new FlxText(config.x, config.y, config.width, config.text, config.size);
                     text.active = true;
                     textMap.set(name, text);
+                default:
+                    var object:FlxObject = new FlxObject(config.x, config.y, config.width, config.height);
+                    object.active = true;
+                    objectMap.set(name, object);
             }
         });
         addcallback("addObject", function (name:String) {
@@ -48,8 +54,87 @@ class LuaScript
                 FlxG.state.add(spriteMap.get(name));
             } else if (textMap.exists(name)) {
                 FlxG.state.add(textMap.get(name));
+            } else {
+                FlxG.state.add(objectMap.get(name));
             }
         });
+        addcallback("removeObject", function (name:String) {
+            if (spriteMap.exists(name)) {
+                FlxG.state.remove(spriteMap.get(name));
+            } else if (textMap.exists(name)) {
+                FlxG.state.remove(textMap.get(name));
+            } else {
+                FlxG.state.remove(objectMap.get(name));
+            }
+        });
+        addcallback("insertObject", function (name:String, pos:Int = 0) {
+            if (spriteMap.exists(name)) {
+                FlxG.state.insert(pos, spriteMap.get(name));
+            } else if (textMap.exists(name)) {
+                FlxG.state.insert(pos, textMap.get(name));
+            } else {
+                FlxG.state.insert(pos, objectMap.get(name));
+            }
+        });
+        
+        // Text Config
+        addcallback("configText", function (name:String, config:Dynamic) {
+            if (textMap.exists(name)) {
+                var text:FlxText = textMap.get(name);
+                setCodeWithCheckNull(config.x, x -> text.x = x);
+                setCodeWithCheckNull(config.y, y -> text.y = y);
+                setCodeWithCheckNull(config.width, width -> text.width = width);
+                setCodeWithCheckNull(config.text, txt -> text.text = txt);
+                setCodeWithCheckNull(config.size, size -> text.size = size);
+                setCodeWithCheckNull(config.color, color -> text.color = EngineUtil.getColorName(color));
+                setCodeWithCheckNull(config.alignment, align -> text.alignment = EngineUtil.getAlignmentName(align));
+                setCodeWithCheckNull(config.alpha, alpha -> text.alpha = alpha);
+                setCodeWithCheckNull(config.scale, scale -> text.scale.set(scale.x, scale.y));
+                setCodeWithCheckNull(config.angle, angle -> text.angle = angle);
+                setCodeWithCheckNull(config.visible, visible -> text.visible = visible);
+                setCodeWithCheckNull(config.active, active -> text.active = active);
+                setCodeWithCheckNull(config.scrollFactor, scrollFactor -> text.scrollFactor.set(scrollFactor.x, scrollFactor.y));
+                setCodeWithCheckNull(config.antialiasing, antialiasing -> text.antialiasing = antialiasing);
+                setCodeWithCheckNull(config.font, font -> text.font = Paths.font(font));
+                setCodeWithCheckNull(config.borderSize, borderSize -> text.borderSize = borderSize);
+                setCodeWithCheckNull(config.borderColor, borderColor -> text.borderColor = EngineUtil.getColorName(borderColor));
+                setCodeWithCheckNull(config.borderStyle, borderStyle -> text.borderStyle = EngineUtil.getBorderStyleName(borderStyle));
+                setCodeWithCheckNull(config.borderQuality, borderQuality -> text.borderQuality = borderQuality);
+            }
+        });
+
+        // Main
+        addcallback("setProperty", function (name:String, property:String, value:Dynamic) {
+            if (spriteMap.exists(name)) {
+                var sprite = spriteMap.get(name);
+                Reflect.setProperty(sprite, property, value);
+            } else if (textMap.exists(name)) {
+                var text = textMap.get(name);
+                Reflect.setProperty(text, property, value);
+            } else if (objectMap.exists(name)) {
+                var object = objectMap.get(name);
+                Reflect.setProperty(object, property, value);
+            }
+        });
+        addcallback("getProperty", function (name:String, property:String) {
+            if (spriteMap.exists(name)) {
+                var sprite = spriteMap.get(name);
+                return Reflect.getProperty(sprite, property);
+            } else if (textMap.exists(name)) {
+                var text = textMap.get(name);
+                return Reflect.getProperty(text, property);
+            } else if (objectMap.exists(name)) {
+                var object = objectMap.get(name);
+                return Reflect.getProperty(object, property);
+            }
+            return null;
+        });
+    }
+
+    function setCodeWithCheckNull<T>(value:Null<T>, setter:T->Void) {
+        if (value != null) {
+            setter(value);
+        }
     }
 
     function checkError(string:String, int:Int) {
