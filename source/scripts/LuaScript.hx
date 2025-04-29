@@ -39,7 +39,7 @@ class LuaScript
             switch (type) {
                 case "sprite":
                     var sprite:FlxSprite = new FlxSprite(config.x, config.y);
-                    setCodeWithCheckNull(config.image, img -> sprite.loadGraphic(Paths.image(img)));
+                    setCodeWithCheckNull(config.image, image -> sprite.loadGraphic(Paths.image(image)));
                     sprite.active = true;
                     spriteMap.set(name, sprite);
                 case "text":

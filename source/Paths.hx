@@ -5,6 +5,7 @@ import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.system.FlxAssets;
 import openfl.Assets;
+import openfl.display.BitmapData;
 import openfl.media.Sound;
 #if sys
 import sys.FileSystem;
@@ -25,6 +26,11 @@ class Paths {
 	static public function getPath(folder:Null<String>, file:String) {
 		if (folder == null)
 			folder = DEFAULT_FOLDER;
+		#if sys
+		var modPath = './$folder/$file';
+		if (FileSystem.exists(modPath))
+			return modPath;
+		#end
 		return folder + '/' + file;
 	}
 
@@ -57,18 +63,31 @@ class Paths {
 
 	inline static public function getPackerAtlas(key:String)
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key), file('images/$key.txt'));
+
 	public static function returnGraphic(key:String, ?cache:Bool = true):FlxGraphic
 	{
 		var path:String = file('$key.png');
-		if (Assets.exists(path, IMAGE))
-		{
-			if (!currentTrackedAssets.exists(path))
-			{
+		#if sys
+		// Check for game folder first
+		var modPath = './$DEFAULT_FOLDER/$key.png';
+		if (FileSystem.exists(modPath)) {
+			if (!currentTrackedAssets.exists(modPath)) {
+				var bitmap = BitmapData.fromFile(modPath);
+				var graphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, modPath, cache);
+				graphic.persist = true;
+				currentTrackedAssets.set(modPath, graphic);
+			}
+			localTrackedAssets.push(modPath);
+			return currentTrackedAssets.get(modPath);
+		}
+		#end
+
+		if (Assets.exists(path, IMAGE)) {
+			if (!currentTrackedAssets.exists(path)) {
 				var graphic:FlxGraphic = FlxGraphic.fromBitmapData(Assets.getBitmapData(path), false, path, cache);
 				graphic.persist = true;
 				currentTrackedAssets.set(path, graphic);
 			}
-
 			localTrackedAssets.push(path);
 			return currentTrackedAssets.get(path);
 		}
@@ -79,25 +98,31 @@ class Paths {
 
 	public static function returnSound(key:String, ?cache:Bool = true, ?beepOnNull:Bool = true):Sound
 	{
-		for (i in SOUND_EXT)
-		{
-			if (Assets.exists(file(key + i), SOUND))
-			{
-				var path:String = file(key + i);
+		for (i in SOUND_EXT) {
+			var path:String = file(key + i);
+			#if sys
+			// Check for mod file first
+			var modPath = './$DEFAULT_FOLDER/$key$i';
+			if (FileSystem.exists(modPath)) {
+				if (!currentTrackedSounds.exists(modPath))
+					currentTrackedSounds.set(modPath, Sound.fromFile(modPath));
+				localTrackedAssets.push(modPath);
+				return currentTrackedSounds.get(modPath);
+			}
+			#end
+
+			if (Assets.exists(path, SOUND)) {
 				if (!currentTrackedSounds.exists(path))
 					currentTrackedSounds.set(path, Assets.getSound(path, cache));
-
 				localTrackedAssets.push(path);
 				return currentTrackedSounds.get(path);
 			}
-			else if (beepOnNull)
-			{
-				trace('oops! sound $key returned null');
-				return FlxAssets.getSoundAddExtension('flixel/sounds/beep');
-			}
 		}
 
-		trace('oops! sound $key returned null');
+		if (beepOnNull) {
+			trace('oops! sound $key returned null');
+			return FlxAssets.getSoundAddExtension('flixel/sounds/beep');
+		}
 		return null;
 	}
 
