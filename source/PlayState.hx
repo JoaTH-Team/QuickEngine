@@ -8,6 +8,12 @@ using StringTools;
 class PlayState extends FlxState
 {
 	var luaArray:Array<LuaScript> = [];
+	public static var instance:PlayState = null;
+
+	public function new() {
+		super();
+		instance = this;
+	}
 
 	override public function create()
 	{

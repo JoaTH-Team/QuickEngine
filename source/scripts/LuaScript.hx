@@ -1,5 +1,6 @@
 package scripts;
 
+import PlayState;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -173,6 +174,12 @@ class LuaScript
             } else if (objectMap.exists(name)) {
                 var object = objectMap.get(name);
                 Reflect.setProperty(object, property, value);
+            } else {
+                var instance = PlayState.instance;
+                if (instance != null) {
+                    var game = instance;
+                    Reflect.setProperty(game, property, value);
+                }
             }
         });
         addcallback("getProperty", function (name:String, property:String) {
@@ -185,6 +192,12 @@ class LuaScript
             } else if (objectMap.exists(name)) {
                 var object = objectMap.get(name);
                 return Reflect.getProperty(object, property);
+            } else {
+                var instance = PlayState.instance;
+                if (instance != null) {
+                    var game = instance;
+                    return Reflect.getProperty(game, property);
+                }
             }
             return null;
         });
