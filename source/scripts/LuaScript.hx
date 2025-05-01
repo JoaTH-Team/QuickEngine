@@ -36,7 +36,7 @@ class LuaScript {
         lua = LuaL.newstate();
         LuaL.openlibs(lua);
         Lua.init_callbacks(lua);
-        trace("Load Script: " + script);
+        trace("Load Script: " + script + ' - From state: ' + Type.getClassName(Type.getClass(FlxG.state)));
 
         // Initialize API modules
         objectApi = new LuaObjectAPI(this);

@@ -16,12 +16,27 @@ class ScriptedState extends FlxState
 		super();
 		instance = this;
         this.allowToLoadOtherFile = allowToLoadOtherFile;
+        nameFile = name;
 	}
 
 	override public function create()
 	{
 		super.create();
-		if (allowToLoadOtherFile)
+
+        var directory = Paths.file('data/states/');
+        if (sys.FileSystem.exists(directory))
+        {
+            for (file in sys.FileSystem.readDirectory(directory))
+            {
+                if (file.endsWith(nameFile + '.lua'))
+                {
+                    var script = new LuaScript(directory + file);
+                    luaArray.push(script);
+                }
+            }
+        }
+
+        if (allowToLoadOtherFile)
             createExtract();
 
 		callOnScripts("create", []);
@@ -42,11 +57,6 @@ class ScriptedState extends FlxState
 						var script = new LuaScript(directory + file);
 						luaArray.push(script);
 					}
-                    if (file.endsWith(nameFile + '.lua'))
-                    {
-                        var script = new LuaScript(directory + file);
-                        luaArray.push(script);
-                    }
 				}
 			}
 		}
