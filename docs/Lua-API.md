@@ -87,8 +87,22 @@ Note: These List are not done yet!
 - `returnToDefaultState()`
     - Returns to the default play state (will come back to `PlayState`)
 
-## Functions API
-- `create()`
-    - Function can be used for creating sprite, text, etc.
-- `update(elapsed)`
-    - Function will updated every frame of the game
+## Camera API
+- `createCamera(name, config)`
+    - Creates a new camera with configuration
+    - `config`: Configuration object with properties:
+    - `x`, `y`: Position
+    - `width`, `height`: Dimensions
+    - `zoom`: Camera zoom level
+- `addCamera(name, defaultDraw)`
+    - Adds a camera to the game state
+    - `defaultDraw`: Whether to use default drawing (optional, default true)
+- `removeCamera(name)`
+    - Removes a camera from the game state
+- `setCameraBgColor(name, color)`
+    - Sets the background color of a camera
+    - `color`: Color string value
+- `setObjectCamera(name, cameraName)`
+    - Assigns an object to a specific camera
+    - `name`: Object name (sprite, text, or generic object)
+    - `cameraName`: Name of the camera to assign to

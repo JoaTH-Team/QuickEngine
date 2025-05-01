@@ -21,6 +21,7 @@ class LuaScript {
     private var textApi:LuaTextAPI;
     private var propertyApi:LuaPropertyAPI;
     private var eventApi:LuaEventAPI;
+    private var cameraApi:LuaCameraAPI;
 
     // Maps moved to LuaObjectAPI
     @:allow(scripts.api)
@@ -44,6 +45,7 @@ class LuaScript {
         textApi = new LuaTextAPI(this);
         propertyApi = new LuaPropertyAPI(this);
         eventApi = new LuaEventAPI(this);
+        cameraApi = new LuaCameraAPI(this);
 
         var result:Dynamic = LuaL.dofile(lua, script);
         var resultString:String = Lua.tostring(lua, result);
@@ -59,6 +61,7 @@ class LuaScript {
         textApi.initialize();
         propertyApi.initialize();
         eventApi.initialize();
+        cameraApi.initialize();
     }
 
     function checkError(string:String, int:Int) {

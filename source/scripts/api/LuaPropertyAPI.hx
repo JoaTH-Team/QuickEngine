@@ -38,23 +38,53 @@ class LuaPropertyAPI {
         } else if (script.objectMap.exists(name)) {
             var object = script.objectMap.get(name);
             object.setPosition(x, y);
+        } else if (script.cameraMap.exists(name)) {
+            var camera = script.cameraMap.get(name);
+            camera.setPosition(x, y);
         }
+    }
+
+    private function setNestedProperty(obj:Dynamic, propertyPath:String, value:Dynamic) {
+        var props = propertyPath.split(".");
+        var current = obj;
+        
+        for (i in 0...props.length - 1) {
+            current = Reflect.getProperty(current, props[i]);
+            if (current == null) return;
+        }
+        
+        Reflect.setProperty(current, props[props.length - 1], value);
+    }
+
+    private function getNestedProperty(obj:Dynamic, propertyPath:String):Dynamic {
+        var props = propertyPath.split(".");
+        var current = obj;
+        
+        for (prop in props) {
+            if (current == null) return null;
+            current = Reflect.getProperty(current, prop);
+        }
+        
+        return current;
     }
 
     private function setProperty(name:String, property:String, value:Dynamic) {
         if (script.spriteMap.exists(name)) {
             var sprite = script.spriteMap.get(name);
-            Reflect.setProperty(sprite, property, value);
+            setNestedProperty(sprite, property, value);
         } else if (script.textMap.exists(name)) {
             var text = script.textMap.get(name);
-            Reflect.setProperty(text, property, value);
+            setNestedProperty(text, property, value);
         } else if (script.objectMap.exists(name)) {
             var object = script.objectMap.get(name);
-            Reflect.setProperty(object, property, value);
+            setNestedProperty(object, property, value);
+        } else if (script.cameraMap.exists(name)) {
+            var camera = script.cameraMap.get(name);
+            setNestedProperty(camera, property, value);
         } else {
             var instance = PlayState.instance;
             if (instance != null) {
-                Reflect.setProperty(instance, property, value);
+                setNestedProperty(instance, property, value);
             }
         }
     }
@@ -62,17 +92,20 @@ class LuaPropertyAPI {
     private function getProperty(name:String, property:String) {
         if (script.spriteMap.exists(name)) {
             var sprite = script.spriteMap.get(name);
-            return Reflect.getProperty(sprite, property);
+            return getNestedProperty(sprite, property);
         } else if (script.textMap.exists(name)) {
             var text = script.textMap.get(name);
-            return Reflect.getProperty(text, property);
+            return getNestedProperty(text, property);
         } else if (script.objectMap.exists(name)) {
             var object = script.objectMap.get(name);
-            return Reflect.getProperty(object, property);
+            return getNestedProperty(object, property);
+        } else if (script.cameraMap.exists(name)) {
+            var camera = script.cameraMap.get(name);
+            return getNestedProperty(camera, property);
         } else {
             var instance = PlayState.instance;
             if (instance != null) {
-                return Reflect.getProperty(instance, property);
+                return getNestedProperty(instance, property);
             }
         }
         return null;
