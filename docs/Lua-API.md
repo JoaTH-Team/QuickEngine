@@ -1,10 +1,94 @@
 # Overview
-Lua API is a main core for coding/scripting game on this engine, there are a list of all lua API can be use
+Lua API is the main core for coding/scripting games in this engine. Here is a comprehensive list of all available Lua APIs.
 
-## API
+Note: These List are not done yet!
+
+## Object API
 - `createObject(type, name, config)`
-    - This one will help creating a object for sprite, text and object (why not)
-- `addObject(name)`, `removeObject(name)`
-    - Added a object or remove a object
-- `insertObject(pos, name)`
-    - Insert a object, work like `addObject(name)` but you can adjust what position by the `pos`
+    - Creates a new object (sprite, text, or generic object)
+    - `type`: "sprite", "text", or any other type defaults to generic object
+    - `config`: Configuration object with properties like x, y, width, height, image (for sprites), text (for text objects), etc.
+- `addObject(name)`
+    - Adds an object to the current state
+- `removeObject(name)`
+    - Removes an object from the current state
+- `insertObject(name, pos)`
+    - Inserts an object at a specific position in the game
+
+## Text API
+- `setText(name, text)`
+    - Updates the text content of a text object
+- `configText(name, config)`
+    - Configures a text object with various properties:
+    - `x`, `y`: Position
+    - `width`: Text width
+    - `text`: Text content
+    - `size`: Font size
+    - `color`: Text color
+    - `alignment`: Text alignment
+    - `alpha`: Transparency
+    - `scale`: {x, y} scaling
+    - `angle`: Rotation angle
+    - `visible`: Visibility
+    - `active`: Activity state
+    - `scrollFactor`: {x, y} scroll speed
+    - `antialiasing`: Anti-aliasing
+    - `font`: Custom font
+    - `borderSize`: Text border size
+    - `borderColor`: Border color
+    - `borderStyle`: Border style
+    - `borderQuality`: Border quality
+
+## Sprite API
+- `makeGraphic(name, config)`
+    - Creates a colored rectangle for a sprite
+    - `config`: {width, height, color}
+- `configSprite(name, config)`
+    - Configures a sprite with properties:
+    - `image`: Sprite image path
+    - `x`, `y`: Position
+    - `width`, `height`: Dimensions
+    - `alpha`: Transparency
+    - `scale`: {x, y} scaling
+    - `angle`: Rotation angle
+    - `visible`: Visibility
+    - `active`: Activity state
+    - `scrollFactor`: {x, y} scroll speed
+- `getSpriteSheet(name, image)`
+    - Loads a spritesheet for animations
+- `setAnimation(name, config)`
+    - Sets up sprite animations with types:
+    - "frame": Basic frame animation
+    - "prefix": Animation by prefix
+    - "indices": Animation by specific frame indices
+- `playAnimation(name, animation, force)`
+    - Plays a animation from the sprite
+
+## Property API
+- `setProperty(name, property, value)`
+    - Sets any property on an object
+- `getProperty(name, property)`
+    - Gets any property from an object
+- `setPosition(name, x, y)`
+    - Sets the position of an object
+- `setScale(name, x, y)`
+    - Sets the scale of an object
+
+## Event API
+- `getInputPress(type, keyName)`
+    - Checks keyboard input
+    - Types: "justPressed", "justReleased", "pressed"
+- `getInputPressMulti(type, keyArray)`
+    - Checks multiple keyboard inputs at once
+    - Types: "justPressed", "justReleased", "pressed"
+- `switchState(name, allowLoadOtherFile)`
+    - Switches to another game state
+    - `allowLoadOtherFile` is enable by default, set to `false` if you don't want to the global `game/data` folder also load scripts
+- `returnToDefaultState()`
+    - Returns to the default play state (will come back to `PlayState`)
+
+## Functions API
+- `create()`
+    - Function can be used for creating sprite, text, etc.
+- `update(elapsed)`
+    - Function will updated every frame of the game

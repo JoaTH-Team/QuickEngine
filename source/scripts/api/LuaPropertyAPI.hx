@@ -13,6 +13,32 @@ class LuaPropertyAPI {
     public function initialize() {
         script.addcallback("setProperty", setProperty);
         script.addcallback("getProperty", getProperty);
+
+        script.addcallback("setPosition", setPosition);
+        script.addcallback("setScale", setScale);
+    }
+
+    private function setScale(name:String, x:Float, y:Float) {
+        if (script.spriteMap.exists(name)) {
+            var sprite = script.spriteMap.get(name);
+            sprite.scale.set(x, y);
+        } else if (script.textMap.exists(name)) {
+            var text = script.textMap.get(name);
+            text.scale.set(x, y);
+        }
+    }
+
+    private function setPosition(name:String, x:Float, y:Float) {
+        if (script.spriteMap.exists(name)) {
+            var sprite = script.spriteMap.get(name);
+            sprite.setPosition(x, y);
+        } else if (script.textMap.exists(name)) {
+            var text = script.textMap.get(name);
+            text.setPosition(x, y);
+        } else if (script.objectMap.exists(name)) {
+            var object = script.objectMap.get(name);
+            object.setPosition(x, y);
+        }
     }
 
     private function setProperty(name:String, property:String, value:Dynamic) {

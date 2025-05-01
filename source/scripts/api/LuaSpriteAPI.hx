@@ -12,9 +12,20 @@ class LuaSpriteAPI {
 
     public function initialize() {
         script.addcallback("configSprite", configSprite);
+        script.addcallback("makeGraphic", makeGraphic);
+
         script.addcallback("getSpriteSheet", getSpriteSheet);
         script.addcallback("setAnimation", setAnimation);
         script.addcallback("playAnimation", playAnimation);
+    }
+
+    private function makeGraphic(name:String, config:Dynamic) {
+        if (script.spriteMap.exists(name)) {
+            var sprite:FlxSprite = script.spriteMap.get(name);
+            if (config.width != null && config.height != null) {
+                sprite.makeGraphic(config.width, config.height, EngineUtil.getColorName(config.color));
+            }
+        }
     }
 
     private function configSprite(name:String, config:Dynamic) {
@@ -46,6 +57,15 @@ class LuaSpriteAPI {
         if (script.spriteMap.exists(name)) {
             var sprite:FlxSprite = script.spriteMap.get(name);
             switch (config.type) {
+                case "frame":
+                    return sprite.animation.add(
+                        config.name, 
+                        config.frames, 
+                        config.frameRate, 
+                        config.loop, 
+                        config.flipX, 
+                        config.flipY
+                    );
                 case "prefix":
                     return sprite.animation.addByPrefix(
                         config.name, 
