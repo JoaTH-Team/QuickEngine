@@ -148,8 +148,26 @@ class EngineUtil {
                 return FlxKey.SPACE;
             case "ENTER":
                 return FlxKey.ENTER;
-            case "ESCAPE":
+			case "ESCAPE" | "ESC":
                 return FlxKey.ESCAPE;
+			case "CONTROL":
+				return FlxKey.CONTROL;
+			case "SHIFT":
+				return FlxKey.SHIFT;
+			case "ALT":
+				return FlxKey.ALT;
+			case "TAB":
+				return FlxKey.TAB;
+			case "BACKSPACE":
+				return FlxKey.BACKSPACE;
+			case "DELETE":
+				return FlxKey.DELETE;
+			case "HOME":
+				return FlxKey.HOME;
+			case "END":
+				return FlxKey.END;
+			case "INSERT":
+				return FlxKey.INSERT;
             case "UP":
                 return FlxKey.UP;
             case "DOWN":
@@ -158,6 +176,10 @@ class EngineUtil {
                 return FlxKey.LEFT;
             case "RIGHT":
                 return FlxKey.RIGHT;
+			case "ANY":
+				return FlxKey.ANY;
+			case "NONE":
+				return FlxKey.NONE;
         }
 
         return FlxKey.NONE;
