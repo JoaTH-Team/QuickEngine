@@ -68,6 +68,26 @@ Note: These List are not done yet!
 - `playAnimation(name, animation, force)`
     - Plays a animation from the sprite
 
+## Camera API
+- `createCamera(name, config)`
+    - Creates a new camera with configuration
+    - `config`: Configuration object with properties:
+    - `x`, `y`: Position
+    - `width`, `height`: Dimensions
+    - `zoom`: Camera zoom level
+- `addCamera(name, defaultDraw)`
+    - Adds a camera to the game state
+    - `defaultDraw`: Whether to use default drawing (optional, default true)
+- `removeCamera(name)`
+    - Removes a camera from the game state
+- `setCameraBgColor(name, color)`
+    - Sets the background color of a camera
+    - `color`: Color string value
+- `setObjectCamera(name, cameraName)`
+    - Assigns an object to a specific camera
+    - `name`: Object name (sprite, text, or generic object)
+    - `cameraName`: Name of the camera to assign to
+
 ## Property API
 - `setProperty(name, property, value)`
     - Sets any property on an object
@@ -97,27 +117,7 @@ Note: These List are not done yet!
     - Checks multiple keyboard inputs at once
     - Types: "justPressed", "justReleased", "pressed"
 - `switchState(name, allowLoadOtherFile)`
-    - Switches to another game state
+    - Switches to another game state by exists lua file
     - `allowLoadOtherFile` is enable by default, set to `false` if you don't want to the global `game/data` folder also load scripts
 - `returnToDefaultState()`
     - Returns to the default play state (will come back to `PlayState`)
-
-## Camera API
-- `createCamera(name, config)`
-    - Creates a new camera with configuration
-    - `config`: Configuration object with properties:
-    - `x`, `y`: Position
-    - `width`, `height`: Dimensions
-    - `zoom`: Camera zoom level
-- `addCamera(name, defaultDraw)`
-    - Adds a camera to the game state
-    - `defaultDraw`: Whether to use default drawing (optional, default true)
-- `removeCamera(name)`
-    - Removes a camera from the game state
-- `setCameraBgColor(name, color)`
-    - Sets the background color of a camera
-    - `color`: Color string value
-- `setObjectCamera(name, cameraName)`
-    - Assigns an object to a specific camera
-    - `name`: Object name (sprite, text, or generic object)
-    - `cameraName`: Name of the camera to assign to
