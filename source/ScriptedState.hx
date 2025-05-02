@@ -7,7 +7,7 @@ using StringTools;
 
 class ScriptedState extends FlxState
 {
-	var luaArray:Array<LuaScript> = [];
+	public var luaArray:Array<LuaScript> = [];
 	public static var instance:ScriptedState = null;
     public var allowToLoadOtherFile:Bool = true;
     public var nameFile:String = "";

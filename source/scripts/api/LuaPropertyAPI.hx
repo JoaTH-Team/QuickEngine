@@ -1,7 +1,11 @@
 package scripts.api;
 
 import PlayState;
+import ScriptedState;
+import flixel.FlxG;
 import scripts.LuaScript;
+
+using StringTools;
 
 class LuaPropertyAPI {
     private var script:LuaScript;
@@ -11,12 +15,45 @@ class LuaPropertyAPI {
     }
 
     public function initialize() {
+		script.addVar("setTitle", setTitle);
+		script.addVar("setWindowSize", setWindowSize);
+
         script.addcallback("setProperty", setProperty);
+		script.addcallback("setClassProperty", setClassProperty);
+
         script.addcallback("getProperty", getProperty);
+		script.addcallback("getClassProperty", getClassProperty);
 
         script.addcallback("setPosition", setPosition);
         script.addcallback("setScale", setScale);
-    }
+		script.addcallback("addFolder", addFolder);
+	}
+
+	private function setWindowSize(width:Int, height:Int)
+	{
+		if (width > 0 && height > 0)
+		{
+			FlxG.stage.window.width = width;
+			FlxG.stage.window.height = height;
+		}
+		else
+		{
+			FlxG.stage.window.width = 800;
+			FlxG.stage.window.height = 600;
+		}
+	}
+
+	private function setTitle(name:String)
+	{
+		if (name != null)
+		{
+			FlxG.stage.window.title = name;
+		}
+		else // prevent null
+		{
+			FlxG.stage.window.title = "Quick Engine";
+		}
+	}
 
     private function setScale(name:String, x:Float, y:Float) {
         if (script.spriteMap.exists(name)) {
@@ -110,4 +147,48 @@ class LuaPropertyAPI {
         }
         return null;
     }
+	private function getClassProperty(className:String, property:String)
+	{
+		var classRef = Type.resolveClass(className);
+		if (classRef != null)
+		{
+			return getNestedProperty(classRef, property);
+		}
+		return null;
+	}
+
+	private function setClassProperty(className:String, property:String, value:Dynamic)
+	{
+		var classRef = Type.resolveClass(className);
+		if (classRef != null)
+		{
+			setNestedProperty(classRef, property, value);
+		}
+	}
+
+	private function addFolder(folderName:String)
+	{
+		try
+		{
+			var directory = Paths.file('data/$folderName/');
+			if (sys.FileSystem.exists(directory))
+			{
+				for (file in sys.FileSystem.readDirectory(directory))
+				{
+					if (file.endsWith('.lua'))
+					{
+						var script = new LuaScript(directory + file);
+						if (PlayState.instance != null)
+							PlayState.instance.luaArray.push(script);
+						else if (ScriptedState.instance != null)
+							ScriptedState.instance.luaArray.push(script);
+					}
+				}
+			}
+		}
+		catch (e:haxe.Exception)
+		{
+			trace(e.details());
+		}
+	}
 }

@@ -3,6 +3,10 @@ Lua API is the main core for coding/scripting games in this engine. Here is a co
 
 Note: These List are not done yet!
 
+## Default API
+- `print(value)`
+    - Print any text or value on console/terminal
+
 ## Object API
 - `createObject(type, name, config)`
     - Creates a new object (sprite, text, or generic object)
@@ -67,12 +71,23 @@ Note: These List are not done yet!
 ## Property API
 - `setProperty(name, property, value)`
     - Sets any property on an object
+- `setClassProperty(className, property, value)`
+    - Sets any property on an class
 - `getProperty(name, property)`
     - Gets any property from an object
+- `getClassProperty(className, property)`
+    - Gets any property from an class
 - `setPosition(name, x, y)`
     - Sets the position of an object
 - `setScale(name, x, y)`
     - Sets the scale of an object
+- `setTitle(name)`
+    - Sets title for the game
+- `setWindowSize(width, height)`
+    - Sets the window size of the game
+    - If `width` and `height` is null or lower than 0, is will auto set onto 800x600
+- `addFolder(folderName)`
+    - Allow to load other directory contains scripting file, like how `PlayState` work
 
 ## Event API
 - `getInputPress(type, keyName)`

@@ -7,7 +7,7 @@ using StringTools;
 
 class PlayState extends FlxState
 {
-	var luaArray:Array<LuaScript> = [];
+	public var luaArray:Array<LuaScript> = [];
 	public static var instance:PlayState = null;
 
 	public function new() {

@@ -8,3 +8,7 @@ Note: These List are not done yet!
     - Function can be used for creating sprite, text, etc.
 - `update(elapsed)`
     - Function will updated every frame of the game
+- `destroy()`
+    - Function will do when the states has been destroy
+- `draw()`
+    - Function will do when the states drawed
