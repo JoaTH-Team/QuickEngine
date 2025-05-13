@@ -18,6 +18,9 @@ class LuaEventAPI {
         script.addcallback("getInputPressMulti", getInputPressMulti);
 
         script.addcallback("switchState", switchState);
+        script.addcallback("openSubState", openSubState);
+        script.addcallback("closeSubState", closeSubState);
+
         script.addcallback("returnToDefaultState", returnToDefaultState);
     }
 
@@ -65,12 +68,56 @@ class LuaEventAPI {
         			{
         				FlxG.switchState(() -> new ScriptedState(name, allowLoadOtherFile));
         			}
+                    for (ext in Paths.HSCRIPT_EXT)
+                    {
+                        if (file.endsWith(name + ext))
+                        {
+                            FlxG.switchState(() -> new ScriptedState(name, allowLoadOtherFile));
+                        }
+                    }
         		}
         	}
         }
         catch (e:haxe.Exception)
         {
         	trace(e.details());
+        }
+    }
+
+    private function openSubState(name:String, allowLoadOtherFile:Bool = false) {
+        try {
+            var directory = Paths.file('data/states/');
+            if (sys.FileSystem.exists(directory))
+            {
+                for (file in sys.FileSystem.readDirectory(directory))
+                {
+                    if (file.endsWith(name + '.lua'))
+                    {
+                        FlxG.state.openSubState(new ScriptedSubState(name, allowLoadOtherFile));
+                    }
+                    for (ext in Paths.HSCRIPT_EXT)
+                    {
+                        if (file.endsWith(name + ext))
+                        {
+                            FlxG.state.openSubState(new ScriptedSubState(name, allowLoadOtherFile));
+                        }
+                    }
+                }
+            }
+        }
+        catch (e:haxe.Exception)
+        {
+            trace(e.details());
+        }
+    }
+
+    private function closeSubState() {
+        try {
+            FlxG.state.closeSubState();
+        }
+        catch (e:haxe.Exception)
+        {
+            trace(e.details());
         }
     }
 

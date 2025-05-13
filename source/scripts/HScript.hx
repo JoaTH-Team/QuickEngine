@@ -1,5 +1,6 @@
 package scripts;
 
+import flixel.FlxG;
 import sys.io.File;
 import crowplexus.iris.Iris;
 
@@ -54,7 +55,42 @@ class HScript extends Iris
         set('insert', function (pos:Int, basic:flixel.FlxBasic) return flixel.FlxG.state.insert(pos, basic));
     
         set('switchScriptState', function (name:String, allowToLoadOtherFile:Bool = false) return flixel.FlxG.switchState(() -> new ScriptedState(name, allowToLoadOtherFile)));
-        
+        set('openScriptSubState', function (name:String, allowLoadOtherFile:Bool = false) {
+            try {
+                var directory = Paths.file('data/states/');
+                if (sys.FileSystem.exists(directory))
+                {
+                    for (file in sys.FileSystem.readDirectory(directory))
+                    {
+                        if (file.endsWith(name + '.lua'))
+                        {
+                            FlxG.state.openSubState(new ScriptedSubState(name, allowLoadOtherFile));
+                        }
+                        for (ext in Paths.HSCRIPT_EXT)
+                        {
+                            if (file.endsWith(name + ext))
+                            {
+                                FlxG.state.openSubState(new ScriptedSubState(name, allowLoadOtherFile));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (e:haxe.Exception)
+            {
+                trace(e.details());
+            }
+        });
+        set('closeScriptSubState', function () {
+            try {
+                FlxG.state.closeSubState();
+            }
+            catch (e:haxe.Exception)
+            {
+                trace(e.details());
+            }
+        });
+
         set('getInputPress', function (type:String, key:String) {
             var returnKey:String = key.toUpperCase();
             switch (type.toLowerCase()) {
