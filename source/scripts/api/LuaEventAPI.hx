@@ -54,7 +54,7 @@ class LuaEventAPI {
         return false;
     }
 
-    private function switchState(name:String, allowLoadOtherFile:Bool = true) {
+    private function switchState(name:String, allowLoadOtherFile:Bool = false) {
         try {
         	var directory = Paths.file('data/states/');
         	if (sys.FileSystem.exists(directory))

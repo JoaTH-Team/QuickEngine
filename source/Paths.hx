@@ -18,6 +18,7 @@ class Paths {
 	inline public static final DEFAULT_FOLDER:String = 'game';
 
 	public static var SOUND_EXT:Array<String> = ['.ogg', '.wav'];
+	public static var HSCRIPT_EXT:Array<String> = ['.hx', '.hxs', '.hscript', '.hxc', '.haxeScript'];
 
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
 	public static var currentTrackedSounds:Map<String, Sound> = [];

@@ -1,5 +1,6 @@
 package;
 
+import scripts.HScript;
 import flixel.FlxState;
 import scripts.LuaScript;
 
@@ -8,11 +9,13 @@ using StringTools;
 class ScriptedState extends FlxState
 {
 	public var luaArray:Array<LuaScript> = [];
+	public var hscriptArray:Array<HScript> = [];
+
 	public static var instance:ScriptedState = null;
-    public var allowToLoadOtherFile:Bool = true;
+    public var allowToLoadOtherFile:Bool = false;
     public var nameFile:String = "";
 
-	public function new(name:String, allowToLoadOtherFile:Bool = true) {
+	public function new(name:String, allowToLoadOtherFile:Bool = false) {
 		super();
 		instance = this;
         this.allowToLoadOtherFile = allowToLoadOtherFile;
@@ -33,6 +36,14 @@ class ScriptedState extends FlxState
                     var script = new LuaScript(directory + file);
                     luaArray.push(script);
                 }
+				for (ext in Paths.HSCRIPT_EXT)
+				{
+					if (file.endsWith(nameFile + ext))
+					{
+						var script = new HScript(directory + file, this);
+						hscriptArray.push(script);
+					}	
+				}
             }
         }
 
@@ -56,6 +67,14 @@ class ScriptedState extends FlxState
 					{
 						var script = new LuaScript(directory + file);
 						luaArray.push(script);
+					}
+					for (ext in Paths.HSCRIPT_EXT)
+					{
+						if (file.endsWith(nameFile + ext))
+						{
+							var script = new HScript(directory + file, this);
+							hscriptArray.push(script);
+						}	
 					}
 				}
 			}
@@ -91,6 +110,11 @@ class ScriptedState extends FlxState
 		for (i in 0...luaArray.length)
 		{
 			final script:LuaScript = luaArray[i];
+			script.call(funcName, funcArgs);
+		}
+		for (i in 0...hscriptArray.length)
+		{
+			final script:HScript = hscriptArray[i];
 			script.call(funcName, funcArgs);
 		}
 	}
